@@ -65,7 +65,6 @@ const App = () => {
               { required: true, message: 'Please confirm your password!' },
               ({ getFieldValue }) => ({
                 validator(rule, value) {
-                  console.log('rule: ' + JSON.stringify(rule));
                   if (!value || getFieldValue('password') === value) {
                     return Promise.resolve();
                   }
