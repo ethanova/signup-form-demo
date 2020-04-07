@@ -11,7 +11,7 @@ const App = () => {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>The best login form you'll ever use.</p>
+        <p>Please register your new username and password!</p>
       </header>
       <div>
         <Radio.Group value={formToShow} onChange={(e) => setFormToShow(e.target.value)}>
