@@ -59,17 +59,26 @@ const App = () => {
           <Form.Item
             label="Confirm Password"
             name="confirmation_password"
-            validateTrigger="onBlur"
+            dependencies={['password']}
+            hasFeedback
             rules={[
               { required: true, message: 'Please confirm your password!' },
-              passwordRegexRule,
+              ({ getFieldValue }) => ({
+                validator(rule, value) {
+                  console.log('rule: ' + JSON.stringify(rule));
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject('The two passwords that you entered do not match!');
+                },
+              }),
             ]}
           >
             <Input.Password />
           </Form.Item>
 
-          <Form.Item wrapperCol={{ offset: 8, span: 8 }}>
-            <Button type="primary" htmlType="submit">
+          <Form.Item name="submit" wrapperCol={{ offset: 8, span: 8 }}>
+            <Button data-testid="submit-registration" type="primary" htmlType="submit">
               Submit
             </Button>
           </Form.Item>
