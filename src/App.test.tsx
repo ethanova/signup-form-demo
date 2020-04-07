@@ -52,3 +52,31 @@ describe('Password field requirements', () => {
     expect(screen.queryByText(new RegExp(passwordErrorMessage))).toBeNull();
   });
 });
+
+describe('Confirmation password field', () => {
+  it('should show error about needing to match when this password does not match initial', async () => {
+    const errorMessage = 'The two passwords that you entered do not match!';
+    render(<App />);
+    fireEvent.change(screen.getByLabelText('Confirm Password'), {
+      target: { value: 'abcdef' },
+    });
+    fireEvent.blur(screen.getByLabelText('Confirm Password'));
+    const alert = await screen.findByText(errorMessage);
+    expect(alert.textContent).toBe(errorMessage);
+  });
+  it('should NOT show error about needing to match when this password does match initial', async () => {
+    const errorMessage = 'The two passwords that you entered do not match!';
+    const component = render(<App />);
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'P@ssw0rd' },
+    });
+    fireEvent.change(screen.getByLabelText('Confirm Password'), {
+      target: { value: 'P@ssw0rd' },
+    });
+    try {
+      // ant and RTL really don't seem to mix well together
+      await screen.findByText(errorMessage);
+    } catch (e) {}
+    expect(await screen.queryByText(errorMessage)).toBeNull();
+  });
+});
