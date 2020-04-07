@@ -1,5 +1,6 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Tooltip } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import logo from './logo.svg';
 import './App.css';
 
@@ -8,9 +9,20 @@ const layout = {
   wrapperCol: { span: 8 },
 };
 
+const passwordRegexRule = {
+  pattern: new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})'),
+  message:
+    'Must contain at least 1 lowercase, 1 upper case, and 1 special character, and be longer than 8 characters.',
+};
+
 const App = () => {
   const onSubmit = (values: any) => {
     console.log(values);
+    const loginInfo = {
+      username: values.username.trim(),
+      password: values.password.trim(),
+    };
+    console.log(loginInfo);
   };
   return (
     <div className="App">
@@ -23,15 +35,23 @@ const App = () => {
           <Form.Item
             label="Username"
             name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
+            rules={[{ required: true, message: 'Please input your username!', whitespace: true }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="Password"
+            label={
+              <span>
+                Password&nbsp;
+                <Tooltip title="Should be at least 8 characters, with a combination of letters, numbers, and special characters">
+                  <InfoCircleOutlined />
+                </Tooltip>
+              </span>
+            }
             name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
+            validateTrigger="onBlur"
+            rules={[{ required: true, message: 'Please enter your password!' }, passwordRegexRule]}
           >
             <Input.Password />
           </Form.Item>
@@ -39,7 +59,11 @@ const App = () => {
           <Form.Item
             label="Confirm Password"
             name="confirmation_password"
-            rules={[{ required: true, message: 'Please confirm your password!' }]}
+            validateTrigger="onBlur"
+            rules={[
+              { required: true, message: 'Please confirm your password!' },
+              passwordRegexRule,
+            ]}
           >
             <Input.Password />
           </Form.Item>
