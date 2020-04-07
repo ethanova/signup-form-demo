@@ -1,24 +1,56 @@
 import React from 'react';
+import { Form, Input, Button } from 'antd';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
+const layout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
+};
+
+const App = () => {
+  const onSubmit = (values: any) => {
+    console.log(values);
+  };
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p>The best login form you'll ever use.</p>
       </header>
+      <div>
+        <Form {...layout} onFinish={onSubmit}>
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: 'Please input your username!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: 'Please input your password!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            label="Confirm Password"
+            name="confirmation_password"
+            rules={[{ required: true, message: 'Please confirm your password!' }]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 }
