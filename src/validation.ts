@@ -13,17 +13,10 @@ export const validatePassword = (password: string) => {
       error: '',
     };
   } else {
-    if (password === '') {
-      return {
-        valid: false,
-        error: 'A password must be entered.',
-      };
-    } else {
-      return {
-        valid: false,
-        error: passwordRegexRule.message,
-      };
-    }
+    return {
+      valid: false,
+      error: passwordRegexRule.message,
+    };
   }
 };
 
@@ -37,16 +30,9 @@ export const validateConfirmationPassword = (
       error: '',
     };
   } else {
-    if (confirmationPassword === '') {
-      return {
-        valid: false,
-        error: 'A password must be entered.',
-      };
-    } else {
-      return {
-        valid: false,
-        error: 'The two passwords that you entered do not match!',
-      };
-    }
+    return {
+      valid: false,
+      error: 'The two passwords that you entered do not match!',
+    };
   }
 };

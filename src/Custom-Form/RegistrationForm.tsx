@@ -1,68 +1,69 @@
-import React, { MouseEvent, useState } from 'react';
+import React, { MouseEvent, useState, useEffect } from 'react';
 import { Input, Row, Col, Button, Space, Tooltip } from 'antd';
-import { InfoCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { validatePassword, validateConfirmationPassword } from '../validation';
 
-interface FieldData {
-  value: string;
-  errors: string[];
-}
-
 const RegistrationForm = () => {
-  const [usernameData, setUsernameData] = useState<FieldData>({ value: '', errors: [] });
-  const [passwordData, setPasswordData] = useState<FieldData>({
-    value: '',
-    errors: [],
-  });
-  const [confirmationPasswordData, setConfirmationPasswordData] = useState<FieldData>({
-    value: '',
-    errors: [],
-  });
+  const [username, setUsername] = useState('');
+  const [usernameErrors, setUsernameErrors] = useState<string[]>([]);
+  const [password, setPassword] = useState('');
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [confirmationPassword, setConfirmationPassword] = useState('');
+  const [confirmationPasswordErrors, setConfirmationPasswordErrors] = useState<string[]>([]);
+  const [serverResponse, setServerResponse] = useState('');
 
-  const processPasswordUpdate = (password: string, ignoreLength: boolean = false) => {
+  useEffect(() => {
     const errors = [];
     const validatePasswordResult = validatePassword(password);
-    if (!validatePasswordResult.valid && (password.length > 7 || ignoreLength)) {
+    if (!validatePasswordResult.valid && password.length > 0) {
       errors.push(validatePasswordResult.error);
     }
-    setPasswordData({
-      value: password,
-      errors,
-    });
-  };
+    setPasswordErrors(errors);
+  }, [password]);
 
-  const processConfirmationPasswordUpdate = (confirmationPassword: string) => {
-    const errors = [];
-    const validateConfirmationPasswordResult = validateConfirmationPassword(
-      confirmationPassword,
-      passwordData.value
-    );
-    if (!validateConfirmationPasswordResult.valid) {
-      errors.push(validateConfirmationPasswordResult.error);
+  useEffect(() => {
+    if (confirmationPassword.length > 0) {
+      const errors = [];
+      const validateConfirmationPasswordResult = validateConfirmationPassword(
+        confirmationPassword,
+        password
+      );
+      if (!validateConfirmationPasswordResult.valid) {
+        errors.push(validateConfirmationPasswordResult.error);
+      }
+      setConfirmationPasswordErrors(errors);
     }
-    setConfirmationPasswordData({
-      value: confirmationPassword,
-      errors,
-    });
-  };
+  }, [confirmationPassword, password]);
 
   const onSubmit = (e: MouseEvent) => {
     e.preventDefault();
     // Ensure form is validated
-    processPasswordUpdate(passwordData.value, true);
-    if (usernameData.value === '') {
-      setUsernameData({ value: '', errors: ['Username must be entered!'] });
+    if (username === '') setUsernameErrors(['A username must be entered.']);
+    if (password === '') setPasswordErrors(['You must enter a password.']);
+    if (confirmationPassword === '') {
+      setConfirmationPasswordErrors(['You must re-enter your password.']);
     }
-    // Submit if form is valid, or don't if not
-    if (
-      usernameData.value === '' ||
-      passwordData.errors.length > 0 ||
-      confirmationPasswordData.errors.length > 0
-    ) {
-      console.log('failed to submit, form validation errors present');
-    } else {
-      console.log('submit');
+    if (username === '' || password === '' || confirmationPassword === '') {
+      console.log('Form not valid, cannot submit');
+      return;
     }
+    console.log('submit');
+    const url = 'https://na44zeyw3a.execute-api.us-east-1.amazonaws.com/default/tst-demo-ingest';
+    const encodedUrl = `${url}?username=${username}`;
+    fetch(encodedUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+      .then((resp) => {
+        return resp.json();
+      })
+      .then((response) => {
+        if (response.success === true) {
+          setServerResponse('Registration successful!');
+        } else {
+          setServerResponse('Something went wrong, please try again later.');
+        }
+      });
   };
   return (
     <form>
@@ -77,10 +78,10 @@ const RegistrationForm = () => {
               data-testid="username"
               placeholder="Username"
               autoComplete="username"
-              value={usernameData.value}
-              onChange={(e) => setUsernameData({ value: e.target.value.trim(), errors: [] })}
+              value={username}
+              onChange={(e) => setUsername(e.target.value.trim())}
             />
-            <span style={{ color: 'red' }}>{usernameData?.errors?.map((error) => error)}</span>
+            <span style={{ color: 'red' }}>{usernameErrors?.map((error) => error)}</span>
           </Col>
         </Row>
         <Row>
@@ -98,11 +99,10 @@ const RegistrationForm = () => {
               data-testid="password"
               placeholder="hunter2"
               autoComplete="new-password"
-              value={passwordData.value}
-              onChange={(e) => processPasswordUpdate(e.target.value)}
-              onBlur={(e) => processPasswordUpdate(e.target.value, true)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
-            <span style={{ color: 'red' }}>{passwordData.errors?.map((error) => error)}</span>
+            <span style={{ color: 'red' }}>{passwordErrors?.map((error) => error)}</span>
           </Col>
         </Row>
         <Row>
@@ -115,12 +115,11 @@ const RegistrationForm = () => {
               data-testid="confirmation_password"
               placeholder="hunter2"
               autoComplete="new-password"
-              value={confirmationPasswordData.value}
-              onChange={(e) => processConfirmationPasswordUpdate(e.target.value)}
-              onBlur={(e) => processConfirmationPasswordUpdate(e.target.value)}
+              value={confirmationPassword}
+              onChange={(e) => setConfirmationPassword(e.target.value)}
             />
             <span style={{ color: 'red' }}>
-              {confirmationPasswordData.errors?.map((error) => error)}
+              {confirmationPasswordErrors?.map((error) => error)}
             </span>
           </Col>
         </Row>
@@ -129,6 +128,7 @@ const RegistrationForm = () => {
             <Button type="primary" htmlType="submit" onClick={onSubmit}>
               Submit
             </Button>
+            <p>{serverResponse}</p>
           </Col>
         </Row>
       </Space>
