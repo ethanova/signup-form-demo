@@ -1,7 +1,7 @@
 import React from 'react';
-import './matchMedia.mock';
+import '../matchMedia.mock';
 import { render, fireEvent, screen } from '@testing-library/react';
-import App from './App';
+import App from './AntForm';
 
 describe('Password field requirements', () => {
   const passwordErrorMessage =
@@ -48,7 +48,6 @@ describe('Password field requirements', () => {
       target: { value: 'Aaaaaaaaaa8*' },
     });
     fireEvent.blur(screen.getByLabelText('Password'));
-    // const alert = await screen.findByText(new RegExp(passwordErrorMessage));
     expect(screen.queryByText(new RegExp(passwordErrorMessage))).toBeNull();
   });
 });
@@ -66,7 +65,7 @@ describe('Confirmation password field', () => {
   });
   it('should NOT show error about needing to match when this password does match initial', async () => {
     const errorMessage = 'The two passwords that you entered do not match!';
-    const component = render(<App />);
+    render(<App />);
     fireEvent.change(screen.getByLabelText('Password'), {
       target: { value: 'P@ssw0rd' },
     });
