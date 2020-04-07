@@ -5,7 +5,7 @@ import './App.css';
 
 const layout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  wrapperCol: { span: 8 },
 };
 
 const App = () => {
@@ -19,7 +19,7 @@ const App = () => {
         <p>The best login form you'll ever use.</p>
       </header>
       <div>
-        <Form {...layout} onFinish={onSubmit}>
+        <Form {...layout} name="login" onFinish={onSubmit}>
           <Form.Item
             label="Username"
             name="username"
@@ -44,7 +44,7 @@ const App = () => {
             <Input.Password />
           </Form.Item>
 
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Form.Item wrapperCol={{ offset: 8, span: 8 }}>
             <Button type="primary" htmlType="submit">
               Submit
             </Button>
