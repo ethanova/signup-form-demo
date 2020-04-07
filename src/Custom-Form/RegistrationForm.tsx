@@ -118,7 +118,6 @@ const RegistrationForm = () => {
               value={confirmationPasswordData.value}
               onChange={(e) => processConfirmationPasswordUpdate(e.target.value)}
               onBlur={(e) => processConfirmationPasswordUpdate(e.target.value)}
-              suffix={confirmationPasswordData.errors.length > 0 && <CloseCircleOutlined />}
             />
             <span style={{ color: 'red' }}>
               {confirmationPasswordData.errors?.map((error) => error)}
