@@ -85,6 +85,7 @@ const RegistrationForm = () => {
   };
 
   return (
+    //TODO: improve mobile experience
     <form>
       <Space style={{ width: '100%' }} direction="vertical" size="middle">
         <Row>
