@@ -76,6 +76,7 @@ const RegistrationForm = () => {
       .then((resp) => resp.json())
       .then((data) => {
         if (data.usernameExists === true) {
+          setUsernameIsAvailable(false);
           setUsernameErrors(['Username already exists, please pick a different username.']);
         } else {
           setUsernameErrors([]);
