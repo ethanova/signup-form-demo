@@ -19,6 +19,10 @@ const AntForm = () => {
   };
   return (
     <Form {...layout} name="login" onFinish={onSubmit}>
+      <p>
+        I originally built the form in Ant.d, but didn't love how complicated it was so I built the
+        more custom one as well without throwing this away.
+      </p>
       <Form.Item
         label="Username"
         name="username"
