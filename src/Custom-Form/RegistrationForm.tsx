@@ -10,6 +10,7 @@ const RegistrationForm = () => {
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [confirmationPassword, setConfirmationPassword] = useState('');
   const [confirmationPasswordErrors, setConfirmationPasswordErrors] = useState<string[]>([]);
+  const [registrationCallInProgress, setRegistrationCallInProgress] = useState(false);
   const [serverResponse, setServerResponse] = useState('');
 
   useEffect(() => {
@@ -37,6 +38,7 @@ const RegistrationForm = () => {
 
   const onSubmit = (e: MouseEvent) => {
     e.preventDefault();
+    setRegistrationCallInProgress(true);
     // Ensure form is validated
     if (username === '') setUsernameErrors(['A username must be entered.']);
     if (password === '') setPasswordErrors(['You must enter a password.']);
@@ -58,6 +60,7 @@ const RegistrationForm = () => {
         return resp.json();
       })
       .then((response) => {
+        setRegistrationCallInProgress(false);
         if (response.success === true) {
           setServerResponse('Registration successful!');
         } else {
@@ -65,6 +68,20 @@ const RegistrationForm = () => {
         }
       });
   };
+
+  const checkIfUsernameAlreadyExists = (username: string) => {
+    const url = `https://na44zeyw3a.execute-api.us-east-1.amazonaws.com/default/tst-demo-check-username?username=${username}`;
+    fetch(url)
+      .then((resp) => resp.json())
+      .then((data) => {
+        if (data.usernameExists === true) {
+          setUsernameErrors(['Username already exists, please pick a different username.']);
+        } else {
+          setUsernameErrors([]);
+        }
+      });
+  };
+
   return (
     <form>
       <Space style={{ width: '100%' }} direction="vertical" size="middle">
@@ -80,6 +97,7 @@ const RegistrationForm = () => {
               autoComplete="username"
               value={username}
               onChange={(e) => setUsername(e.target.value.trim())}
+              onBlur={(e) => checkIfUsernameAlreadyExists(e.target.value.trim())}
             />
             <span style={{ color: 'red' }}>{usernameErrors?.map((error) => error)}</span>
           </Col>
@@ -125,7 +143,12 @@ const RegistrationForm = () => {
         </Row>
         <Row>
           <Col span={8} offset={8}>
-            <Button type="primary" htmlType="submit" onClick={onSubmit}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={onSubmit}
+              disabled={registrationCallInProgress}
+            >
               Submit
             </Button>
             <p>{serverResponse}</p>
