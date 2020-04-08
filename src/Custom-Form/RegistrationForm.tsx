@@ -1,11 +1,12 @@
 import React, { MouseEvent, useState, useEffect } from 'react';
 import { Input, Row, Col, Button, Space, Tooltip } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined, CheckOutlined } from '@ant-design/icons';
 import { validatePassword, validateConfirmationPassword } from '../validation';
 
 const RegistrationForm = () => {
   const [username, setUsername] = useState('');
   const [usernameErrors, setUsernameErrors] = useState<string[]>([]);
+  const [usernameIsAvailable, setUsernameIsAvailable] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [confirmationPassword, setConfirmationPassword] = useState('');
@@ -78,6 +79,7 @@ const RegistrationForm = () => {
           setUsernameErrors(['Username already exists, please pick a different username.']);
         } else {
           setUsernameErrors([]);
+          setUsernameIsAvailable(true);
         }
       });
   };
@@ -100,6 +102,12 @@ const RegistrationForm = () => {
               onBlur={(e) => checkIfUsernameAlreadyExists(e.target.value.trim())}
             />
             <span style={{ color: 'red' }}>{usernameErrors?.map((error) => error)}</span>
+            {usernameIsAvailable && (
+              <span style={{ color: 'green' }}>
+                <CheckOutlined />
+                &nbsp; Username is available!
+              </span>
+            )}
           </Col>
         </Row>
         <Row>
