@@ -39,7 +39,6 @@ const RegistrationForm = () => {
 
   const onSubmit = (e: MouseEvent) => {
     e.preventDefault();
-    setRegistrationCallInProgress(true);
     // Ensure form is validated
     if (username === '') setUsernameErrors(['A username must be entered.']);
     if (password === '') setPasswordErrors(['You must enter a password.']);
@@ -50,7 +49,7 @@ const RegistrationForm = () => {
       console.log('Form not valid, cannot submit');
       return;
     }
-    console.log('submit');
+    setRegistrationCallInProgress(true);
     const url = 'https://na44zeyw3a.execute-api.us-east-1.amazonaws.com/default/tst-demo-ingest';
     const encodedUrl = `${url}?username=${username}`;
     fetch(encodedUrl, {
