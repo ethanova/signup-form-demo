@@ -147,6 +147,12 @@ const RegistrationForm = () => {
             <span style={{ color: 'red' }}>
               {confirmationPasswordErrors?.map((error) => error)}
             </span>
+            {password === confirmationPassword && confirmationPassword.length > 0 && (
+              <span style={{ color: 'green' }}>
+                <CheckOutlined />
+                &nbsp; Passwords match!
+              </span>
+            )}
           </Col>
         </Row>
         <Row>
